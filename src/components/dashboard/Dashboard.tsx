@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { getUserSubscription, getUserOrders } from '../../lib/stripe';
 import { getProductByPriceId } from '../../stripe-config';
@@ -69,8 +70,18 @@ export function Dashboard() {
             {activeProduct && (
               <div className="mt-2 sm:mt-0">
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-900 text-yellow-200">
-                  Active Plan: {activeProduct.name}
+                  {activeProduct ? `Active Plan: ${activeProduct.name}` : 'Veo3Factory Access'}
                 </span>
+              </div>
+            )}
+            {!hasActiveAccess && (
+              <div className="mt-2 sm:mt-0">
+                <Link
+                  to="/checkout"
+                  className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all transform hover:scale-105"
+                >
+                  Get Veo3Factory
+                </Link>
               </div>
             )}
           </div>
@@ -263,29 +274,19 @@ export function Dashboard() {
                 <div className="flex items-center justify-between">
                   <span className="text-gray-300">Social Posting</span>
                   <span className={`flex items-center ${hasActiveAccess ? 'text-green-400' : 'text-gray-500'}`}>
+                    <div className={`w-2 h-2 rounded-full mr-2 ${hasActiveAccess ? 'bg-green-400' : 'bg-gray-500'}`}></div>
+                    {hasActiveAccess ? 'Scheduled' : 'Pending Access'}
+                  </span>
+                </div>
                 {hasActiveAccess && (
                   <div className="flex items-center justify-between">
                     <span className="text-gray-300">Next Post</span>
                     <span className="text-gray-400">in 3h 24m</span>
                   </div>
                 )}
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-300">Next Post</span>
-                  <span className="text-gray-400">in 3h 24m</span>
-                {activeProduct ? `Active Plan: ${activeProduct.name}` : 'Veo3Factory Access'}
               </div>
             </div>
           </div>
-          {!hasActiveAccess && (
-            <div className="mt-2 sm:mt-0">
-              <Link
-                to="/checkout"
-                className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all transform hover:scale-105"
-              >
-                Get Veo3Factory
-              </Link>
-            </div>
-          )}
         </div>
       </div>
     </div>
