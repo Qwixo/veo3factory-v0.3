@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, CreditCard, Shield, Zap } from 'lucide-react';
-import { STRIPE_PRODUCTS } from '../../stripe-config';
+import { STRIPE_PRODUCTS, getProductById } from '../../stripe-config';
 
 export function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const veo3Product = STRIPE_PRODUCTS.find(p => p.name === 'Veo3Factory');
+  const veo3Product = getProductById('prod_SleJcMKxzR2Ofo'); // Veo3Factory product
 
   const handleCheckout = async () => {
     if (!veo3Product) {
@@ -19,11 +19,17 @@ export function CheckoutPage() {
     setError('');
 
     try {
-      // Create checkout session directly with Stripe (no auth required)
-      const response = await fetch('/api/create-checkout-session', {
+      // Create checkout session via Supabase edge function
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      if (!supabaseUrl) {
+        throw new Error('Supabase URL not configured');
+      }
+
+      const response = await fetch(`${supabaseUrl}/functions/v1/stripe-checkout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
         },
         body: JSON.stringify({
           priceId: veo3Product.priceId,
@@ -33,14 +39,20 @@ export function CheckoutPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create checkout session');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create checkout session');
       }
 
-      const { url } = await response.json();
+      const data = await response.json();
+      
+      if (!data.url) {
+        throw new Error('No checkout URL received');
+      }
       
       // Redirect to Stripe checkout
-      window.location.href = url;
+      window.location.href = data.url;
     } catch (err: any) {
+      console.error('Checkout error:', err);
       setError(err.message || 'Failed to create checkout session');
       setLoading(false);
     }
