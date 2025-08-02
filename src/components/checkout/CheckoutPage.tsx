@@ -1,36 +1,44 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CreditCard, Shield, Zap } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { createCheckoutSession } from '../../lib/stripe';
+import { getMainProduct } from '../../stripe-config';
 
 export function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  const veo3Product = {
-    id: 'prod_SleJcMKxzR2Ofo',
-    priceId: 'price_1Rq70a1fqfaGAxK3iuKHpUZ7',
-    name: 'Veo3Factory',
-    description: 'An automated system that creates, posts, and grows your social media.',
-    price: 97.00
-  };
+  const veo3Product = getMainProduct();
 
   const handleCheckout = async () => {
     setLoading(true);
     setError('');
 
     try {
-      // For now, simulate the checkout process
-      // In production, you would integrate with your payment processor here
-      
-      // Show loading for 2 seconds to simulate processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Redirect to success page
-      window.location.href = '/success';
-      
+      if (!user) {
+        // Redirect to signup if not authenticated
+        navigate('/signup');
+        return;
+      }
+
+      const { url } = await createCheckoutSession({
+        priceId: veo3Product.priceId,
+        successUrl: `${window.location.origin}/success`,
+        cancelUrl: window.location.href,
+        mode: veo3Product.mode,
+      });
+
+      if (url) {
+        window.location.href = url;
+      } else {
+        throw new Error('No checkout URL received');
+      }
     } catch (err: any) {
       console.error('Checkout error:', err);
-      setError('Failed to process checkout. Please try again.');
+      setError(err.message || 'Failed to process checkout. Please try again.');
       setLoading(false);
     }
   };
@@ -101,15 +109,13 @@ export function CheckoutPage() {
             </div>
 
             <div className="bg-yellow-900 border border-yellow-500 rounded-lg p-4 mb-8">
-              <h3 className="text-yellow-200 font-bold mb-2">⚠️ Demo Mode</h3>
+              <h3 className="text-yellow-200 font-bold mb-2">🔐 Secure Checkout</h3>
               <p className="text-yellow-300 text-sm">
-                This is currently in demo mode. To enable real Stripe payments, you'll need to:
+                {user ? 
+                  'Click below to proceed to secure Stripe checkout.' :
+                  'Please sign in to complete your purchase securely.'
+                }
               </p>
-              <ul className="text-yellow-300 text-sm mt-2 space-y-1">
-                <li>• Set up your Stripe account and get API keys</li>
-                <li>• Configure Supabase with your project URL and keys</li>
-                <li>• Deploy the edge functions to handle payments</li>
-              </ul>
             </div>
 
             <button
@@ -123,14 +129,21 @@ export function CheckoutPage() {
                   Processing...
                 </div>
               ) : (
-                `Complete Purchase - $${veo3Product.price.toFixed(2)} (Demo)`
+                user ? 
+                  `Complete Purchase - $${veo3Product.price.toFixed(2)}` :
+                  'Sign In to Purchase'
               )}
             </button>
 
             <div className="text-center mt-6">
-              <p className="text-gray-400 text-sm">
-                Demo mode - No actual payment will be processed
-              </p>
+              {!user && (
+                <p className="text-gray-400 text-sm">
+                  Don't have an account?{' '}
+                  <Link to="/signup" className="text-yellow-400 hover:text-yellow-300">
+                    Sign up here
+                  </Link>
+                </p>
+              )}
             </div>
           </div>
         </div>

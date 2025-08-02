@@ -34,6 +34,11 @@ export function Dashboard() {
   }, [user]);
 
   const activeProduct = subscription?.price_id ? getProductByPriceId(subscription.price_id) : null;
+  
+  // For one-time payments, check if user has any completed orders
+  const hasActiveAccess = activeProduct || orders.some(order => 
+    order.payment_status === 'paid' && order.order_status === 'completed'
+  );
 
   const stats = [
     { label: 'Videos Generated', value: '127', icon: Video, color: 'text-blue-400' },
@@ -208,8 +213,10 @@ export function Dashboard() {
                           {new Date(order.order_date).toLocaleDateString()}
                         </p>
                       </div>
-                      <span className="text-green-400 text-sm font-medium capitalize">
-                        {order.payment_status}
+                      <span className={`text-sm font-medium capitalize ${
+                        order.payment_status === 'paid' ? 'text-green-400' : 'text-yellow-400'
+                      }`}>
+                        {order.order_status || order.payment_status}
                       </span>
                     </div>
                   ))}
@@ -217,38 +224,68 @@ export function Dashboard() {
               </div>
             )}
 
+            {/* Purchase Access */}
+            {!hasActiveAccess && (
+              <div className="bg-gray-900 border border-yellow-400 rounded-xl p-6">
+                <h2 className="text-xl font-bold text-yellow-400 mb-4">Get Full Access</h2>
+                <p className="text-gray-300 mb-4">
+                  Unlock the complete Veo3Factory automation system to start creating viral content.
+                </p>
+                <Link
+                  to="/checkout"
+                  className="w-full inline-flex items-center justify-center bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all transform hover:scale-105"
+                >
+                  Purchase Veo3Factory - $97
+                </Link>
+              </div>
+            )}
+
             {/* Automation Status */}
-            <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
+            <div className={`bg-gray-900 border rounded-xl p-6 ${
+              hasActiveAccess ? 'border-green-500' : 'border-gray-700'
+            }`}>
               <h2 className="text-xl font-bold text-white mb-4">System Status</h2>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-300">VEO 3 API</span>
-                  <span className="flex items-center text-green-400">
-                    <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                    Connected
+                  <span className={`flex items-center ${hasActiveAccess ? 'text-green-400' : 'text-gray-500'}`}>
+                    <div className={`w-2 h-2 rounded-full mr-2 ${hasActiveAccess ? 'bg-green-400' : 'bg-gray-500'}`}></div>
+                    {hasActiveAccess ? 'Connected' : 'Pending Access'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-300">GROK Integration</span>
-                  <span className="flex items-center text-green-400">
-                    <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                    Active
+                  <span className={`flex items-center ${hasActiveAccess ? 'text-green-400' : 'text-gray-500'}`}>
+                    <div className={`w-2 h-2 rounded-full mr-2 ${hasActiveAccess ? 'bg-green-400' : 'bg-gray-500'}`}></div>
+                    {hasActiveAccess ? 'Active' : 'Pending Access'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-300">Social Posting</span>
-                  <span className="flex items-center text-green-400">
-                    <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                    Running
-                  </span>
-                </div>
+                  <span className={`flex items-center ${hasActiveAccess ? 'text-green-400' : 'text-gray-500'}`}>
+                {hasActiveAccess && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Next Post</span>
+                    <span className="text-gray-400">in 3h 24m</span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between">
                   <span className="text-gray-300">Next Post</span>
                   <span className="text-gray-400">in 3h 24m</span>
-                </div>
+                {activeProduct ? `Active Plan: ${activeProduct.name}` : 'Veo3Factory Access'}
               </div>
             </div>
           </div>
+          {!hasActiveAccess && (
+            <div className="mt-2 sm:mt-0">
+              <Link
+                to="/checkout"
+                className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all transform hover:scale-105"
+              >
+                Get Veo3Factory
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

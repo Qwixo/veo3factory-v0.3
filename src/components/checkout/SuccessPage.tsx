@@ -1,8 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { CheckCircle, ArrowRight, Home, Mail } from 'lucide-react';
+import { getMainProduct } from '../../stripe-config';
 
 export function SuccessPage() {
+  const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get('session_id');
+  const product = getMainProduct();
+
   return (
     <div className="min-h-screen bg-black">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -25,11 +30,11 @@ export function SuccessPage() {
           <div className="space-y-4">
             <div className="flex justify-between items-center py-2 border-b border-gray-700">
               <span className="text-gray-400">Product:</span>
-              <span className="text-white font-bold">Veo3Factory Automation System</span>
+              <span className="text-white font-bold">{product.name}</span>
             </div>
             <div className="flex justify-between items-center py-2 border-b border-gray-700">
               <span className="text-gray-400">Amount:</span>
-              <span className="text-white font-bold">$97.00 USD</span>
+              <span className="text-white font-bold">${product.price.toFixed(2)} USD</span>
             </div>
             <div className="flex justify-between items-center py-2 border-b border-gray-700">
               <span className="text-gray-400">Status:</span>
@@ -41,12 +46,20 @@ export function SuccessPage() {
                 {new Date().toLocaleDateString()}
               </span>
             </div>
+            {sessionId && (
+              <div className="flex justify-between items-center py-2">
+                <span className="text-gray-400">Session ID:</span>
+                <span className="text-white text-sm font-mono">
+                  {sessionId.slice(0, 20)}...
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="mt-6 p-4 bg-green-900 border border-green-500 rounded-lg">
             <h3 className="text-green-200 font-bold mb-2">🎉 Access Granted!</h3>
             <p className="text-green-300">
-              Your Veo3Factory automation system is now active and ready to create viral content!
+              Your {product.name} automation system is now active and ready to create viral content!
             </p>
           </div>
         </div>
@@ -63,11 +76,18 @@ export function SuccessPage() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            to="/"
+            to="/dashboard"
             className="inline-flex items-center justify-center bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all transform hover:scale-105"
           >
+            <ArrowRight className="mr-2 w-5 h-5" />
+            Go to Dashboard
+          </Link>
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center bg-gray-800 border border-gray-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-700 transition-all"
+          >
             <Home className="mr-2 w-5 h-5" />
-            Back to Home
+            Home
           </Link>
         </div>
 

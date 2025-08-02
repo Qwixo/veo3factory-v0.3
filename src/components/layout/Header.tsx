@@ -1,8 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { AuthButton } from '../auth/AuthButton';
+import { useAuth } from '../../contexts/AuthContext';
+import { getMainProduct } from '../../stripe-config';
 
 export function Header() {
+  const { user } = useAuth();
+  const product = getMainProduct();
+
   return (
     <header className="bg-gray-900 border-b border-yellow-400 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -14,9 +19,15 @@ export function Header() {
           </div>
           
           <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/checkout" className="text-gray-300 hover:text-white transition-colors">
-              Pricing
-            </Link>
+            {user ? (
+              <Link to="/dashboard" className="text-gray-300 hover:text-white transition-colors">
+                Dashboard
+              </Link>
+            ) : (
+              <Link to="/checkout" className="text-gray-300 hover:text-white transition-colors">
+                Get {product.name} - ${product.price}
+              </Link>
+            )}
             <a href="/#features" className="text-gray-300 hover:text-white transition-colors">
               Features
             </a>
