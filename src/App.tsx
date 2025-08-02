@@ -17,8 +17,20 @@ function App() {
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
-            <Route path="/success" element={<SuccessPage />} />
+            <Route path="/checkout" element={
+              <>
+                <Header />
+                <CheckoutPage />
+              </>
+            } />
+            <Route path="/success" element={
+              <>
+                <Header />
+                <ProtectedRoute>
+                  <SuccessPage />
+                </ProtectedRoute>
+              </>
+            } />
             <Route path="/dashboard" element={
               <>
                 <Header />
