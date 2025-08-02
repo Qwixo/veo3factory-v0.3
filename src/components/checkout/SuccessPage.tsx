@@ -1,0 +1,135 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { CheckCircle, ArrowRight, Home } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { getUserSubscription, getUserOrders } from '../../lib/stripe';
+
+export function SuccessPage() {
+  const [loading, setLoading] = useState(true);
+  const [subscription, setSubscription] = useState<any>(null);
+  const [orders, setOrders] = useState<any[]>([]);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadData = async () => {
+      if (!user) {
+        navigate('/login');
+        return;
+      }
+
+      try {
+        const [subData, ordersData] = await Promise.all([
+          getUserSubscription(),
+          getUserOrders()
+        ]);
+        
+        setSubscription(subData);
+        setOrders(ordersData);
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [user, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
+          <p className="text-gray-300">Loading your purchase details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const latestOrder = orders[0];
+
+  return (
+    <div className="min-h-screen bg-black">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-green-500 rounded-full mb-6">
+            <CheckCircle className="w-12 h-12 text-white" />
+          </div>
+          
+          <h1 className="text-4xl font-bold text-yellow-400 mb-4">
+            Payment Successful!
+          </h1>
+          <p className="text-xl text-gray-300">
+            Thank you for your purchase. Your order has been processed successfully.
+          </p>
+        </div>
+
+        <div className="bg-gray-900 border-2 border-yellow-400 rounded-2xl p-8 mb-8">
+          <h2 className="text-2xl font-bold text-white mb-6">Order Details</h2>
+          
+          {latestOrder && (
+            <div className="space-y-4">
+              <div className="flex justify-between items-center py-2 border-b border-gray-700">
+                <span className="text-gray-400">Order ID:</span>
+                <span className="text-white font-mono text-sm">{latestOrder.checkout_session_id}</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-gray-700">
+                <span className="text-gray-400">Amount:</span>
+                <span className="text-white font-bold">
+                  ${(latestOrder.amount_total / 100).toFixed(2)} {latestOrder.currency.toUpperCase()}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-gray-700">
+                <span className="text-gray-400">Status:</span>
+                <span className="text-green-400 font-medium capitalize">{latestOrder.payment_status}</span>
+              </div>
+              <div className="flex justify-between items-center py-2">
+                <span className="text-gray-400">Date:</span>
+                <span className="text-white">
+                  {new Date(latestOrder.order_date).toLocaleDateString()}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {subscription && subscription.subscription_status === 'active' && (
+            <div className="mt-6 p-4 bg-green-900 border border-green-500 rounded-lg">
+              <h3 className="text-green-200 font-bold mb-2">Active Subscription</h3>
+              <p className="text-green-300">
+                Your subscription is now active and ready to use!
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="bg-gray-900 border border-gray-700 rounded-xl p-6 mb-8">
+          <h3 className="text-xl font-bold text-white mb-4">What's Next?</h3>
+          <div className="space-y-3 text-gray-300">
+            <p>• Check your email for detailed setup instructions</p>
+            <p>• Access your dashboard to configure your automation</p>
+            <p>• Join our community for tips and support</p>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="inline-flex items-center justify-center bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all transform hover:scale-105"
+          >
+            Go to Dashboard
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </button>
+          
+          <button
+            onClick={() => navigate('/')}
+            className="inline-flex items-center justify-center bg-gray-800 text-white font-medium py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors"
+          >
+            <Home className="mr-2 w-5 h-5" />
+            Back to Home
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

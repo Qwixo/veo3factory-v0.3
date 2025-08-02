@@ -1,9 +1,39 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { getUserSubscription, getUserOrders } from '../../lib/stripe';
+import { getProductByPriceId } from '../../stripe-config';
 import { Bot, Video, Calendar, TrendingUp, Settings, Play } from 'lucide-react';
 
 export function Dashboard() {
   const { user } = useAuth();
+  const [subscription, setSubscription] = useState<any>(null);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const [subData, ordersData] = await Promise.all([
+          getUserSubscription(),
+          getUserOrders()
+        ]);
+        
+        setSubscription(subData);
+        setOrders(ordersData);
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      loadUserData();
+    }
+  }, [user]);
+
+  const activeProduct = subscription?.price_id ? getProductByPriceId(subscription.price_id) : null;
 
   const stats = [
     { label: 'Videos Generated', value: '127', icon: Video, color: 'text-blue-400' },
@@ -27,10 +57,26 @@ export function Dashboard() {
           <h1 className="text-3xl font-bold text-white mb-2">
             Welcome back, {user?.profile?.full_name || user?.email.split('@')[0]}!
           </h1>
-          <p className="text-gray-400">
-            Your viral automation system is running smoothly. Here's your overview:
-          </p>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-gray-400">
+              Your viral automation system is running smoothly. Here's your overview:
+            </p>
+            {activeProduct && (
+              <div className="mt-2 sm:mt-0">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-900 text-yellow-200">
+                  Active Plan: {activeProduct.name}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
+
+        {loading && (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400 mx-auto mb-4"></div>
+            <p className="text-gray-400">Loading your data...</p>
+          </div>
+        )}
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -96,6 +142,39 @@ export function Dashboard() {
 
           {/* Quick Actions */}
           <div className="space-y-6">
+            {/* Subscription Status */}
+            {subscription && (
+              <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
+                <h2 className="text-xl font-bold text-white mb-4">Subscription Status</h2>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Plan:</span>
+                    <span className="text-yellow-400 font-medium">
+                      {activeProduct?.name || 'Unknown'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Status:</span>
+                    <span className={`font-medium capitalize ${
+                      subscription.subscription_status === 'active' 
+                        ? 'text-green-400' 
+                        : 'text-yellow-400'
+                    }`}>
+                      {subscription.subscription_status}
+                    </span>
+                  </div>
+                  {subscription.current_period_end && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-300">Next billing:</span>
+                      <span className="text-gray-400">
+                        {new Date(subscription.current_period_end * 1000).toLocaleDateString()}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
               <h2 className="text-xl font-bold text-white mb-4">Quick Actions</h2>
               <div className="space-y-3">
@@ -113,6 +192,30 @@ export function Dashboard() {
                 </button>
               </div>
             </div>
+
+            {/* Recent Orders */}
+            {orders.length > 0 && (
+              <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
+                <h2 className="text-xl font-bold text-white mb-4">Recent Orders</h2>
+                <div className="space-y-3">
+                  {orders.slice(0, 3).map((order) => (
+                    <div key={order.order_id} className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                      <div>
+                        <p className="text-white font-medium">
+                          ${(order.amount_total / 100).toFixed(2)}
+                        </p>
+                        <p className="text-gray-400 text-sm">
+                          {new Date(order.order_date).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <span className="text-green-400 text-sm font-medium capitalize">
+                        {order.payment_status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Automation Status */}
             <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
