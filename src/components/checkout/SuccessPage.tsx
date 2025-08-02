@@ -20,7 +20,7 @@ export function SuccessPage() {
             Payment Successful!
           </h1>
           <p className="text-xl text-gray-300">
-            Welcome to Viral Reels Factory! Your Veo3Factory system is ready.
+            Welcome to Veo3Factory! Your Veo3Factory system is ready.
           </p>
         </div>
 
