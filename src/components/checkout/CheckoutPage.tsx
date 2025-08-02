@@ -113,20 +113,22 @@ export function CheckoutPage() {
             </div>
 
             <button
-              onClick={handleCheckout}
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-6 rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-lg"
-            >
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black mr-3"></div>
-                  Processing...
-                </div>
-              ) : (
-                user ? 
-                  `Complete Purchase - $${veo3Product.price.toFixed(2)}` :
-              )}
-            </button>
+  onClick={handleCheckout}
+  disabled={loading}
+  className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-6 rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-lg"
+>
+  {loading ? (
+    <div className="flex items-center justify-center">
+      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black mr-3"></div>
+      Processing...
+    </div>
+  ) : (
+    user
+      ? `Complete Purchase - $${veo3Product.price.toFixed(2)}`
+      : 'Sign in to Continue'
+  )}
+</button>
+
 
             <div className="text-center mt-6">
               {!user && (
