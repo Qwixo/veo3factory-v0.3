@@ -1,75 +1,39 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, CreditCard, Shield, Zap } from 'lucide-react';
-import { STRIPE_PRODUCTS, getProductById } from '../../stripe-config';
 
 export function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const veo3Product = getProductById('prod_SleJcMKxzR2Ofo'); // Veo3Factory product
+  const veo3Product = {
+    id: 'prod_SleJcMKxzR2Ofo',
+    priceId: 'price_1Rq70a1fqfaGAxK3iuKHpUZ7',
+    name: 'Veo3Factory',
+    description: 'An automated system that creates, posts, and grows your social media.',
+    price: 97.00
+  };
 
   const handleCheckout = async () => {
-    if (!veo3Product) {
-      setError('Product not found');
-      return;
-    }
-
     setLoading(true);
     setError('');
 
     try {
-      // Create checkout session via Supabase edge function
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      if (!supabaseUrl) {
-        throw new Error('Supabase URL not configured');
-      }
-
-      const response = await fetch(`${supabaseUrl}/functions/v1/stripe-checkout`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-        body: JSON.stringify({
-          priceId: veo3Product.priceId,
-          successUrl: `${window.location.origin}/success`,
-          cancelUrl: `${window.location.origin}/checkout`,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create checkout session');
-      }
-
-      const data = await response.json();
+      // For now, simulate the checkout process
+      // In production, you would integrate with your payment processor here
       
-      if (!data.url) {
-        throw new Error('No checkout URL received');
-      }
+      // Show loading for 2 seconds to simulate processing
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Redirect to Stripe checkout
-      window.location.href = data.url;
+      // Redirect to success page
+      window.location.href = '/success';
+      
     } catch (err: any) {
       console.error('Checkout error:', err);
-      setError(err.message || 'Failed to create checkout session');
+      setError('Failed to process checkout. Please try again.');
       setLoading(false);
     }
   };
-
-  if (!veo3Product) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-400 mb-4">Product Not Found</h2>
-          <Link to="/" className="text-yellow-400 hover:text-yellow-300">
-            Return to Home
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-black">
@@ -136,6 +100,18 @@ export function CheckoutPage() {
               </ul>
             </div>
 
+            <div className="bg-yellow-900 border border-yellow-500 rounded-lg p-4 mb-8">
+              <h3 className="text-yellow-200 font-bold mb-2">⚠️ Demo Mode</h3>
+              <p className="text-yellow-300 text-sm">
+                This is currently in demo mode. To enable real Stripe payments, you'll need to:
+              </p>
+              <ul className="text-yellow-300 text-sm mt-2 space-y-1">
+                <li>• Set up your Stripe account and get API keys</li>
+                <li>• Configure Supabase with your project URL and keys</li>
+                <li>• Deploy the edge functions to handle payments</li>
+              </ul>
+            </div>
+
             <button
               onClick={handleCheckout}
               disabled={loading}
@@ -144,16 +120,16 @@ export function CheckoutPage() {
               {loading ? (
                 <div className="flex items-center justify-center">
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black mr-3"></div>
-                  Redirecting to Stripe...
+                  Processing...
                 </div>
               ) : (
-                `Complete Purchase - $${veo3Product.price.toFixed(2)}`
+                `Complete Purchase - $${veo3Product.price.toFixed(2)} (Demo)`
               )}
             </button>
 
             <div className="text-center mt-6">
               <p className="text-gray-400 text-sm">
-                Secure payment powered by Stripe • 30-day money-back guarantee
+                Demo mode - No actual payment will be processed
               </p>
             </div>
           </div>

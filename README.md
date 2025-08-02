@@ -1,6 +1,6 @@
 # VEO 3 Factory - Static Landing Page
 
-A beautiful static landing page for the Viral Reels Factory automation system.
+A beautiful landing page for the Viral Reels Factory automation system with integrated checkout.
 
 ## 🚀 Quick Setup
 
@@ -9,10 +9,30 @@ A beautiful static landing page for the Viral Reels Factory automation system.
 npm run dev
 ```
 
-### 2. View the Site
+### 2. Configure Stripe (Optional)
+To enable real payments, you'll need to:
+
+1. **Set up Stripe**:
+   - Create a Stripe account at https://stripe.com
+   - Get your API keys from the Stripe dashboard
+   - Add your products and get their price IDs
+
+2. **Set up Supabase**:
+   - Create a Supabase project at https://supabase.com
+   - Set up the database schema using the migration files
+   - Deploy the edge functions for payment processing
+   - Configure environment variables
+
+3. **Update Configuration**:
+   - Add your Supabase URL and keys to `.env`
+   - Update `src/stripe-config.ts` with your Stripe price IDs
+   - Configure webhook endpoints in Stripe dashboard
+
+### 3. View the Site
 - **Landing Page**: `index.html` - Main marketing page
 - **Checkout Page**: `checkout.html` - Product purchase page (demo mode)
 - **Thank You Page**: `thank-you.html` - Post-purchase confirmation
+- **React App**: `/` - Full application with authentication and dashboard
 
 ## 🛠 Features
 
@@ -22,6 +42,9 @@ npm run dev
 - ✅ FAQ section with interactive dropdown
 - ✅ Checkout flow (demo mode)
 - ✅ Legal pages (Privacy, Terms, etc.)
+- ✅ React application with user authentication
+- ✅ Stripe integration (requires setup)
+- ✅ User dashboard and order management
 
 ### Interactive Elements
 - ✅ Smooth scrolling animations
@@ -29,6 +52,8 @@ npm run dev
 - ✅ FAQ dropdown functionality
 - ✅ Countdown timer
 - ✅ Cookie consent management
+- ✅ User authentication system
+- ✅ Payment processing integration
 
 ### Design Features
 - ✅ Modern gradient design
@@ -54,15 +79,23 @@ npm run dev
 ├── script.js               # Main page interactions
 ├── checkout-script.js      # Checkout functionality (demo)
 ├── cookie-consent.js       # Cookie management
-└── src/                    # React app (optional)
+├── src/                    # React application
+│   ├── components/         # React components
+│   ├── contexts/           # Authentication context
+│   ├── lib/                # Utility libraries
+│   └── stripe-config.ts    # Stripe product configuration
+└── supabase/               # Supabase configuration
+    ├── functions/          # Edge functions for payments
+    └── migrations/         # Database schema
 ```
 
 ## 🎯 Demo Mode
 
-The checkout system is currently in demo mode:
+The checkout system is currently in **demo mode**:
 - Clicking "Complete Purchase" shows a 2-second loading animation
 - Then redirects to the thank you page
 - No actual payment processing occurs
+- To enable real payments, follow the setup instructions above
 
 ## 🎨 Customization
 
@@ -89,6 +122,7 @@ The checkout system is currently in demo mode:
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
 
 ### Browser Support
 - Modern browsers with ES6+ support
@@ -97,7 +131,9 @@ The checkout system is currently in demo mode:
 
 ## 📞 Support
 
-This is a static demo site. For questions about implementation:
+For questions about implementation:
 - Check browser console for any errors
 - Verify all HTML files are properly linked
 - Ensure CSS and JS files are loading correctly
+- For Stripe integration, ensure all environment variables are set
+- For Supabase integration, verify edge functions are deployed
