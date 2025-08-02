@@ -1,8 +1,8 @@
-import HomePage from './components/HomePage';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { Header } from './components/layout/Header';
+import HomePage from './components/HomePage';
 import { Dashboard } from './components/dashboard/Dashboard';
 import { LoginPage } from './components/auth/LoginPage';
 import { SignupPage } from './components/auth/SignupPage';
@@ -18,11 +18,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
-            <Route path="/checkout" element={<CheckoutPage />}
-            <Route path="/" element={<HomePage />} />
-
-
-
+            <Route path="/checkout" element={
               <>
                 <Header />
                 <CheckoutPage />
