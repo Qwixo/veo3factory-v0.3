@@ -449,7 +449,7 @@ export default function HomePage() {
         <div className="container">
           <div className="footer-content">
             <div className="footer-left">
-              <p>&copy; 2025 Viral Reels Factory. All rights reserved.</p>
+              <p>&copy; 2025 Veo3Factory. All rights reserved.</p>
               <p className="footer-attribution">
                 website made by <a href="https://inventdigitallimited.com" target="_blank" rel="noopener noreferrer">Invent Limited</a>
               </p>
