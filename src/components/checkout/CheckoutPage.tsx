@@ -18,12 +18,6 @@ export function CheckoutPage() {
     setError('');
 
     try {
-      if (!user) {
-        // Redirect to signup if not authenticated
-        navigate('/signup');
-        return;
-      }
-
       const { url } = await createCheckoutSession({
         priceId: veo3Product.priceId,
         successUrl: `${window.location.origin}/success`,
