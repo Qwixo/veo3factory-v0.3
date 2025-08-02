@@ -18,18 +18,10 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/checkout" element={
-              <>
-                <Header />
-                <CheckoutPage />
-              </>
+              <CheckoutPage />
             } />
             <Route path="/success" element={
-              <>
-                <Header />
-                <ProtectedRoute>
-                  <SuccessPage />
-                </ProtectedRoute>
-              </>
+              <SuccessPage />
             } />
             <Route path="/dashboard" element={
               <>

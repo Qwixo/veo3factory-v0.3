@@ -21,5 +21,8 @@ export default defineConfig({
   },
   server: {
     open: '/index.html'
+  },
+  define: {
+    global: 'globalThis',
   }
 });

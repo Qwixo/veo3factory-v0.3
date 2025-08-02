@@ -1,24 +1,15 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, CreditCard, Shield, Zap } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import { createCheckoutSession } from '../../lib/stripe';
 import { STRIPE_PRODUCTS } from '../../stripe-config';
 
 export function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { user } = useAuth();
 
   const veo3Product = STRIPE_PRODUCTS.find(p => p.name === 'Veo3Factory');
 
   const handleCheckout = async () => {
-    if (!user) {
-      // Redirect to signup if not authenticated
-      window.location.href = '/signup';
-      return;
-    }
-
     if (!veo3Product) {
       setError('Product not found');
       return;
@@ -28,13 +19,25 @@ export function CheckoutPage() {
     setError('');
 
     try {
-      const { url } = await createCheckoutSession({
-        priceId: veo3Product.priceId,
-        successUrl: `${window.location.origin}/success`,
-        cancelUrl: `${window.location.origin}/checkout`,
-        mode: veo3Product.mode,
+      // Create checkout session directly with Stripe (no auth required)
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          priceId: veo3Product.priceId,
+          successUrl: `${window.location.origin}/success`,
+          cancelUrl: `${window.location.origin}/checkout`,
+        }),
       });
 
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session');
+      }
+
+      const { url } = await response.json();
+      
       // Redirect to Stripe checkout
       window.location.href = url;
     } catch (err: any) {
@@ -120,13 +123,6 @@ export function CheckoutPage() {
                 <li>✅ Access to Expert Automators & Support</li>
               </ul>
             </div>
-
-            {!user && (
-              <div className="bg-blue-900 border border-blue-500 text-blue-200 px-4 py-3 rounded-lg mb-6">
-                <p className="font-medium">Account Required</p>
-                <p className="text-sm">You'll be redirected to create an account before checkout.</p>
-              </div>
-            )}
 
             <button
               onClick={handleCheckout}

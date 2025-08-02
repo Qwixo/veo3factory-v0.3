@@ -1,54 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { CheckCircle, ArrowRight, Home } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import { getUserSubscription, getUserOrders } from '../../lib/stripe';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { CheckCircle, ArrowRight, Home, Mail } from 'lucide-react';
 
 export function SuccessPage() {
-  const [loading, setLoading] = useState(true);
-  const [subscription, setSubscription] = useState<any>(null);
-  const [orders, setOrders] = useState<any[]>([]);
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const loadData = async () => {
-      if (!user) {
-        navigate('/login');
-        return;
-      }
-
-      try {
-        const [subData, ordersData] = await Promise.all([
-          getUserSubscription(),
-          getUserOrders()
-        ]);
-        
-        setSubscription(subData);
-        setOrders(ordersData);
-      } catch (error) {
-        console.error('Error loading user data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, [user, navigate]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
-          <p className="text-gray-300">Loading your purchase details...</p>
-        </div>
-      </div>
-    );
-  }
-
-  const latestOrder = orders[0];
-
   return (
     <div className="min-h-screen bg-black">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -68,30 +22,26 @@ export function SuccessPage() {
         <div className="bg-gray-900 border-2 border-yellow-400 rounded-2xl p-8 mb-8">
           <h2 className="text-2xl font-bold text-white mb-6">Purchase Complete</h2>
           
-          {latestOrder && (
-            <div className="space-y-4">
-              <div className="flex justify-between items-center py-2 border-b border-gray-700">
-                <span className="text-gray-400">Product:</span>
-                <span className="text-white font-bold">Veo3Factory Automation System</span>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-gray-700">
-                <span className="text-gray-400">Amount:</span>
-                <span className="text-white font-bold">
-                  ${(latestOrder.amount_total / 100).toFixed(2)} {latestOrder.currency.toUpperCase()}
-                </span>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-gray-700">
-                <span className="text-gray-400">Status:</span>
-                <span className="text-green-400 font-medium capitalize">{latestOrder.payment_status}</span>
-              </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="text-gray-400">Date:</span>
-                <span className="text-white">
-                  {new Date(latestOrder.order_date).toLocaleDateString()}
-                </span>
-              </div>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center py-2 border-b border-gray-700">
+              <span className="text-gray-400">Product:</span>
+              <span className="text-white font-bold">Veo3Factory Automation System</span>
             </div>
-          )}
+            <div className="flex justify-between items-center py-2 border-b border-gray-700">
+              <span className="text-gray-400">Amount:</span>
+              <span className="text-white font-bold">$97.00 USD</span>
+            </div>
+            <div className="flex justify-between items-center py-2 border-b border-gray-700">
+              <span className="text-gray-400">Status:</span>
+              <span className="text-green-400 font-medium">Paid</span>
+            </div>
+            <div className="flex justify-between items-center py-2">
+              <span className="text-gray-400">Date:</span>
+              <span className="text-white">
+                {new Date().toLocaleDateString()}
+              </span>
+            </div>
+          </div>
 
           <div className="mt-6 p-4 bg-green-900 border border-green-500 rounded-lg">
             <h3 className="text-green-200 font-bold mb-2">🎉 Access Granted!</h3>
@@ -104,7 +54,7 @@ export function SuccessPage() {
         <div className="bg-gray-900 border border-gray-700 rounded-xl p-6 mb-8">
           <h3 className="text-xl font-bold text-white mb-4">What's Next?</h3>
           <div className="space-y-3 text-gray-300">
-            <p>• Check your email at <strong>{user?.email}</strong> for setup instructions</p>
+            <p>• Check your email for setup instructions and download links</p>
             <p>• Download your complete automation package</p>
             <p>• Follow the step-by-step setup guide</p>
             <p>• Start generating viral content in minutes!</p>
@@ -113,16 +63,8 @@ export function SuccessPage() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            to="/dashboard"
-            className="inline-flex items-center justify-center bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all transform hover:scale-105"
-          >
-            Access Dashboard
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </Link>
-          
-          <Link
             to="/"
-            className="inline-flex items-center justify-center bg-gray-800 text-white font-medium py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors"
+            className="inline-flex items-center justify-center bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all transform hover:scale-105"
           >
             <Home className="mr-2 w-5 h-5" />
             Back to Home
@@ -130,9 +72,10 @@ export function SuccessPage() {
         </div>
 
         <div className="text-center mt-8">
-          <p className="text-gray-400">
+          <p className="text-gray-400 flex items-center justify-center">
+            <Mail className="w-4 h-4 mr-2" />
             Need help? Contact us at{' '}
-            <a href="mailto:jan@veo3factory.com" className="text-yellow-400 hover:text-yellow-300">
+            <a href="mailto:jan@veo3factory.com" className="text-yellow-400 hover:text-yellow-300 ml-1">
               jan@veo3factory.com
             </a>
           </p>
