@@ -125,7 +125,6 @@ export function CheckoutPage() {
               ) : (
                 user ? 
                   `Complete Purchase - $${veo3Product.price.toFixed(2)}` :
-                  'Sign In to Purchase'
               )}
             </button>
 
