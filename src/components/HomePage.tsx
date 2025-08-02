@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import './HomePage.css';
+import '../../styles.css';
 
 export default function HomePage() {
   // FAQ dropdown state

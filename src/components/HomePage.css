@@ -1,3 +1,2 @@
-/* Import the existing styles */
-@import '../index.css';
+/* Import the main styles from the root styles.css */
 @import '../../styles.css';
