@@ -1,9 +1,3 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { AuthButton } from '../auth/AuthButton';
-import { useAuth } from '../../contexts/AuthContext';
-import { getMainProduct } from '../../stripe-config';
-
 export function Header() {
   const { user } = useAuth();
   const product = getMainProduct();
@@ -18,7 +12,7 @@ export function Header() {
             </Link>
           </div>
 
-          <AuthButton />
+          {/* <AuthButton /> */}
         </div>
       </div>
     </header>
