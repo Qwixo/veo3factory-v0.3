@@ -7,17 +7,11 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   build: {
-    rollupOptions: {
-      input: {
-        main: 'index.html',
-        checkout: 'checkout.html',
-        thankYou: 'thank-you.html',
-        privacy: 'privacy-policy.html',
-        cookies: 'cookie-policy.html',
-        legal: 'legal-disclosure.html',
-        terms: 'terms-conditions.html'
-      }
-    }
+  rollupOptions: {
+    input: 'index.html' // OR omit this whole rollupOptions block entirely
+  }
+}
+
   },
   server: {
     open: '/index.html'
