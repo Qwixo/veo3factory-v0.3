@@ -16,8 +16,11 @@ export function Header() {
             <Link to="/" className="text-2xl font-bold text-yellow-400 hover:text-yellow-300 transition-colors">
               <span className="text-white">Veo3</span>Factory
             </Link>
+          </div>
+          
 
 
+          <AuthButton />
         </div>
       </div>
     </header>
