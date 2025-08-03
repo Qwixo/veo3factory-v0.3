@@ -14,7 +14,7 @@ export function Header() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link to="/" className="text-2xl font-bold text-yellow-400 hover:text-yellow-300 transition-colors">
-              <span className="text-white">VIRAL REELS</span> FACTORY
+              <span className="text-white">Veo3</span>Factory
             </Link>
           </div>
           
