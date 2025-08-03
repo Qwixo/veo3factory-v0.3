@@ -17,8 +17,7 @@ export function Header() {
               <span className="text-white">Veo3</span>Factory
             </Link>
           </div>
-          
-
+        
 
           <AuthButton />
         </div>
