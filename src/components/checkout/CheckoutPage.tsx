@@ -49,7 +49,7 @@ export function CheckoutPage() {
 
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-yellow-400 mb-4">Complete Your Purchase</h1>
-          <p className="text-xl text-gray-300">Get instant access to the Viral Reels Factory automation system</p>
+          <p className="text-xl text-gray-300">Get instant access to the Veo3Factory automation system</p>
         </div>
 
         {error && (
