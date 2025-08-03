@@ -16,28 +16,7 @@ export function Header() {
             <Link to="/" className="text-2xl font-bold text-yellow-400 hover:text-yellow-300 transition-colors">
               <span className="text-white">Veo3</span>Factory
             </Link>
-          </div>
-          
-          <nav className="hidden md:flex items-center space-x-8">
-            {user ? (
-              <Link to="/dashboard" className="text-gray-300 hover:text-white transition-colors">
-                Dashboard
-              </Link>
-            ) : (
-              <Link to="/checkout" className="text-gray-300 hover:text-white transition-colors">
-                Get {product.name} - ${product.price}
-              </Link>
-            )}
-            <a href="/#features" className="text-gray-300 hover:text-white transition-colors">
-              Features
-            </a>
-            <a href="/#testimonials" className="text-gray-300 hover:text-white transition-colors">
-              Success Stories
-            </a>
-            <a href="/#faq" className="text-gray-300 hover:text-white transition-colors">
-              FAQ
-            </a>
-          </nav>
+
 
           <AuthButton />
         </div>
