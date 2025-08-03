@@ -18,7 +18,6 @@ export function Header() {
             </Link>
 
 
-          <AuthButton />
         </div>
       </div>
     </header>
