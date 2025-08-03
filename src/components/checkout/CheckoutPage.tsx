@@ -106,15 +106,6 @@ export function CheckoutPage() {
               </ul>
             </div>
 
-            {/* Secure Checkout */}
-            <div className="bg-yellow-900 border border-yellow-500 rounded-lg p-4 mb-8">
-              <h3 className="text-yellow-200 font-bold mb-2">🔐 Secure Checkout</h3>
-              <p className="text-yellow-300 text-sm">
-                {user
-                  ? 'Click below to proceed to secure Stripe checkout.'
-                  : 'Please sign in to complete your purchase securely.'}
-              </p>
-            </div>
 
             {/* CTA Button */}
             <button
