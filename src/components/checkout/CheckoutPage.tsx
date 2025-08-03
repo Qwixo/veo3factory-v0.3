@@ -132,17 +132,7 @@ export function CheckoutPage() {
               )}
             </button>
 
-            {/* Auth note */}
-            <div className="text-center mt-6">
-              {!user && (
-                <p className="text-gray-400 text-sm">
-                  Don't have an account?{' '}
-                  <Link to="/signup" className="text-yellow-400 hover:text-yellow-300">
-                    Sign up here
-                  </Link>
-                </p>
-              )}
-            </div>
+
           </div>
         </div>
       </div>
