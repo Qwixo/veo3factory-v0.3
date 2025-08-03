@@ -67,7 +67,7 @@ export function CheckoutPage() {
               <p className="text-gray-400 mb-4">{veo3Product.description}</p>
 
               <div className="text-gray-500 text-lg line-through mb-1">$650</div>
-              <div className="text-green-400 text-sm mb-1">–$553 (Founding Member Discount)</div>
+              <div className="text-green-400 text-sm mb-1">–$553 (First 100 Members Discount)</div>
               <div className="text-5xl font-bold text-yellow-400 mb-2">${veo3Product.price.toFixed(2)}</div>
               <p className="text-gray-400">One-time payment</p>
 
