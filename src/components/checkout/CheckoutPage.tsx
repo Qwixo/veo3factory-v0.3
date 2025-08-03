@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ArrowLeft, CreditCard, Shield, Zap } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
 import { createCheckoutSession } from '../../lib/stripe';
 import { getMainProduct } from '../../stripe-config';
-
-// ... all imports stay the same
 
 export function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { user } = useAuth();
-  const navigate = useNavigate();
 
   const veo3Product = getMainProduct();
 
@@ -106,7 +101,6 @@ export function CheckoutPage() {
               </ul>
             </div>
 
-
             {/* CTA Button */}
             <button
               onClick={handleCheckout}
@@ -123,7 +117,11 @@ export function CheckoutPage() {
               )}
             </button>
 
-
+            <div className="text-center mt-6">
+              <p className="text-gray-400 text-sm">
+                Secure payment powered by Stripe • No account required
+              </p>
+            </div>
           </div>
         </div>
       </div>

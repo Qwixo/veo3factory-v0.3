@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { CheckCircle, ArrowRight, Home, Mail } from 'lucide-react';
+import { CheckCircle, ArrowRight, Home, Mail, Download } from 'lucide-react';
 import { getMainProduct } from '../../stripe-config';
 
 export function SuccessPage() {
@@ -20,7 +20,7 @@ export function SuccessPage() {
             Payment Successful!
           </h1>
           <p className="text-xl text-gray-300">
-            Welcome to Veo3Factory! Your system is ready.
+            Welcome to Veo3Factory! Your automation system is ready.
           </p>
         </div>
 
@@ -57,9 +57,12 @@ export function SuccessPage() {
           </div>
 
           <div className="mt-6 p-4 bg-green-900 border border-green-500 rounded-lg">
-            <h3 className="text-green-200 font-bold mb-2">🎉 Access Granted!</h3>
+            <h3 className="text-green-200 font-bold mb-2 flex items-center">
+              <Download className="w-5 h-5 mr-2" />
+              🎉 Access Granted!
+            </h3>
             <p className="text-green-300">
-              Your {product.name} automation system is now active and ready to create viral content!
+              Your {product.name} automation system is now active! Check your email for download links and setup instructions.
             </p>
           </div>
         </div>
@@ -67,27 +70,32 @@ export function SuccessPage() {
         <div className="bg-gray-900 border border-gray-700 rounded-xl p-6 mb-8">
           <h3 className="text-xl font-bold text-white mb-4">What's Next?</h3>
           <div className="space-y-3 text-gray-300">
-            <p>• Check your email for setup instructions and download links</p>
-            <p>• Download your complete automation package</p>
-            <p>• Follow the step-by-step setup guide</p>
-            <p>• Start generating viral content in minutes!</p>
+            <p className="flex items-start">
+              <span className="text-yellow-400 mr-2">1.</span>
+              Check your email for setup instructions and download links
+            </p>
+            <p className="flex items-start">
+              <span className="text-yellow-400 mr-2">2.</span>
+              Download your complete automation package
+            </p>
+            <p className="flex items-start">
+              <span className="text-yellow-400 mr-2">3.</span>
+              Follow the step-by-step setup guide
+            </p>
+            <p className="flex items-start">
+              <span className="text-yellow-400 mr-2">4.</span>
+              Start generating viral content in minutes!
+            </p>
           </div>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            to="/dashboard"
+            to="/"
             className="inline-flex items-center justify-center bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all transform hover:scale-105"
           >
-            <ArrowRight className="mr-2 w-5 h-5" />
-            Go to Dashboard
-          </Link>
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center bg-gray-800 border border-gray-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-700 transition-all"
-          >
             <Home className="mr-2 w-5 h-5" />
-            Home
+            Back to Home
           </Link>
         </div>
 

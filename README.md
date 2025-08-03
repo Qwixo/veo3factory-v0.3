@@ -9,44 +9,30 @@ A beautiful landing page for the Viral Reels Factory automation system with inte
 npm run dev
 ```
 
-### 2. Configure Stripe (Optional)
-To enable real payments, you'll need to:
+### 2. Configure Stripe (Required for Payments)
+To enable the $97 Veo3Factory payments, you'll need to:
 
 1. **Set up Stripe**:
    - Create a Stripe account at https://stripe.com
    - Get your API keys from the Stripe dashboard
-   - Add your products and get their price IDs
+   - Create a product for "Veo3Factory" at $97.00 and get the price ID
 
 2. **Set up Supabase**:
    - Create a Supabase project at https://supabase.com
-   - Set up the database schema using the migration files
    - Deploy the edge functions for payment processing
    - Configure environment variables
 
 3. **Update Configuration**:
    - Add your Supabase URL and keys to `.env`
-   - Update `src/stripe-config.ts` with your Stripe price IDs
+   - Update `src/stripe-config.ts` with your actual Stripe price ID for Veo3Factory
    - Configure webhook endpoints in Stripe dashboard
 
 ### 3. View the Site
-- **Landing Page**: `index.html` - Main marketing page
-- **Checkout Page**: `checkout.html` - Product purchase page (demo mode)
-- **Thank You Page**: `thank-you.html` - Post-purchase confirmation
 - **React App**: `/` - Full application with authentication and dashboard
 
 ## 🛠 Features
 
-### Static Pages
-- ✅ Responsive landing page design
-- ✅ Product showcase and testimonials
-- ✅ FAQ section with interactive dropdown
-- ✅ Checkout flow (demo mode)
 - ✅ Legal pages (Privacy, Terms, etc.)
-- ✅ React application with user authentication
-- ✅ Stripe integration (requires setup)
-- ✅ User dashboard and order management
-
-### Interactive Elements
 - ✅ Smooth scrolling animations
 - ✅ Image gallery with hover effects
 - ✅ FAQ dropdown functionality

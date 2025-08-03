@@ -4,7 +4,7 @@ import Stripe from 'npm:stripe@17.7.0';
 const stripeSecret = Deno.env.get('STRIPE_SECRET_KEY')!;
 const stripe = new Stripe(stripeSecret, {
   appInfo: {
-    name: 'Viral Reels Factory',
+    name: 'Veo3Factory',
     version: '1.0.0',
   },
 });
@@ -34,7 +34,7 @@ function corsResponse(body: string | object | null, status = 200) {
 Deno.serve(async (req) => {
   try {
     if (req.method === 'OPTIONS') {
-      return corsResponse({}, 204);
+      return corsResponse(null, 204);
     }
 
     if (req.method !== 'POST') {
@@ -57,7 +57,7 @@ Deno.serve(async (req) => {
         },
       ],
       mode: 'payment', // One-time payment
-      success_url: successUrl,
+      success_url: successUrl + '?session_id={CHECKOUT_SESSION_ID}',
       cancel_url: cancelUrl,
       // Allow promotion codes
       allow_promotion_codes: true,
@@ -67,11 +67,17 @@ Deno.serve(async (req) => {
       payment_intent_data: {
         metadata: {
           product_name: 'Veo3Factory',
+          product_price: '97.00',
         },
+      },
+      // Add metadata to session for tracking
+      metadata: {
+        product_name: 'Veo3Factory',
+        product_price: '97.00',
       },
     });
 
-    console.log(`Created checkout session ${session.id}`);
+    console.log(`Created checkout session ${session.id} for Veo3Factory - $97`);
 
     return corsResponse({ 
       sessionId: session.id, 
