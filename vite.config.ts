@@ -7,11 +7,10 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   build: {
-  rollupOptions: {
-    input: 'index.html' // OR omit this whole rollupOptions block entirely
-  }
-}
-
+    rollupOptions: {
+      input: 'index.html'
+    }
+  }, // ← this comma was missing
   server: {
     open: '/index.html'
   },
